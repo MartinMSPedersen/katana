@@ -1,15 +1,15 @@
 # Dockerfile to spin up a working Katana installation
-FROM python:3.8
+FROM ubuntu:22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Install base Dependencies
 RUN apt-get update -qq \
-	&& apt-get install -y -qq python-tk tk-dev libffi-dev libssl-dev pandoc \
+	&& apt-get install -y -qq wget git python-tk tk-dev libffi-dev libssl-dev pandoc \
 	libgmp3-dev libzbar-dev tesseract-ocr xsel libpoppler-cpp-dev libmpc-dev \
-	libdbus-glib-1-dev ruby libenchant-2-dev apktool nodejs groff binwalk \
+	libdbus-glib-1-dev ruby-dev libenchant-2-dev apktool nodejs groff binwalk \
 	foremost tcpflow poppler-utils exiftool steghide stegsnow bison ffmpeg \
-	libgd-dev less \
+	libgd-dev less python3-pip \
 	# Clean up for smaller images
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/*
@@ -39,10 +39,10 @@ RUN make
 RUN cp /usr/snow-20130616/snow /usr/local/bin/snow && chmod +x /usr/local/bin/snow
 
 # Clone Katana Repository
-RUN git clone --recursive https://github.com/JohnHammond/katana.git /katana
+RUN git clone --recursive https://github.com/MartinMSPedersen/katana.git /katana
 # Install katana python dependencies
 WORKDIR /katana
-RUN pip install -r requirements.txt
+RUN pip3 install -r requirements.txt
 
 # Create runtime data directory directory
 RUN mkdir /data
